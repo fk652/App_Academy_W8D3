@@ -34,30 +34,10 @@ Game.prototype.play = function () {
     terminal: false
   });
 
-  let overCallback = function () {
-    let white_count = 0;
-    let black_count = 0;
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
-        let el = this.board.grid[i][j];
-        if (el === undefined) {
-          continue;
-        } else if (el.color === "white") {
-          white_count++;
-        } else {
-          black_count++;
-        }
-      }
-    }
-    console.log(`White: ${white_count}`)
-    console.log(`Black: ${black_count}`)
-
-    this.board.print();
+  this.runLoop(function() {
     rlInterface.close();
     rlInterface = null;
-  }
-
-  this.runLoop(overCallback);
+  });
 };
 
 /**
@@ -90,12 +70,38 @@ Game.prototype.playTurn = function (callback) {
   }
 };
 
+/*
+  Counts the total number of pieces for each player
+  Prints the final board state and piece counts
+*/
+Game.prototype.print_final_result = function() {
+  let white_count = 0;
+  let black_count = 0;
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      let el = this.board.getPiece([i, j]);
+      if (el === undefined) {
+        continue;
+      } else if (el.color === "white") {
+        white_count++;
+      } else {
+        black_count++;
+      }
+    }
+  }
+
+  this.board.print();
+  console.log(`White: ${white_count}`)
+  console.log(`Black: ${black_count}`)
+}
+
 /**
  * Continues game play, switching turns, until the game is over.
  */
 Game.prototype.runLoop = function (overCallback) {
   if (this.board.isOver()) {
     console.log("The game is over!");
+    this.print_final_result();
     overCallback();
   } else if (!this.board.hasMove(this.turn)) {
     console.log(`${this.turn} has no move!`);
