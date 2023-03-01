@@ -179,7 +179,7 @@ Board.prototype.hasMove = function (color) {
  * the black player are out of moves.
  */
 Board.prototype.isOver = function () {
-  return !this.hasMove("white") && !this.hasMove("black")
+  return !this.hasMove("white") && !this.hasMove("black");
 };
 
 
@@ -189,7 +189,21 @@ Board.prototype.isOver = function () {
  * Prints a string representation of the Board to the console.
  */
 Board.prototype.print = function () {
-  
+  console.log("   0  1  2  3  4  5  6  7")
+  for (let i = 0; i < 8; i++) {
+    let new_row = [];
+    for (let j = 0; j < 8; j++) {
+      let el = this.grid[i][j];
+      if (el === undefined) {
+        new_row.push("__");
+      } else if (el.color === "white") {
+        new_row.push("🍑");
+      } else {
+        new_row.push("🍆");
+      }
+    }
+    console.log(i, new_row.join(' '));
+  }
 };
 
 

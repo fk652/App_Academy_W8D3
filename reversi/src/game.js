@@ -34,10 +34,30 @@ Game.prototype.play = function () {
     terminal: false
   });
 
-  this.runLoop(function () {
+  let overCallback = function () {
+    let white_count = 0;
+    let black_count = 0;
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        let el = this.board.grid[i][j];
+        if (el === undefined) {
+          continue;
+        } else if (el.color === "white") {
+          white_count++;
+        } else {
+          black_count++;
+        }
+      }
+    }
+    console.log(`White: ${white_count}`)
+    console.log(`Black: ${black_count}`)
+
+    this.board.print();
     rlInterface.close();
     rlInterface = null;
-  });
+  }
+
+  this.runLoop(overCallback);
 };
 
 /**
@@ -52,7 +72,12 @@ Game.prototype.playTurn = function (callback) {
   );
 
   function handleResponse(answer) {
-    const pos = JSON.parse(answer);
+    if (!Array.isArray(answer)) {
+      answer = `[ ${answer.split(' ').join(', ')} ]`;
+    }
+
+    let pos = JSON.parse(answer);
+
     if (!this.board.validMove(pos, this.turn)) {
       console.log("Invalid move!");
       this.playTurn(callback);
@@ -75,7 +100,7 @@ Game.prototype.runLoop = function (overCallback) {
   } else if (!this.board.hasMove(this.turn)) {
     console.log(`${this.turn} has no move!`);
     this._flipTurn();
-    this.runLoop();
+    this.runLoop(overCallback);
   } else {
     this.playTurn(this.runLoop.bind(this, overCallback));
   }
