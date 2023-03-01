@@ -2,11 +2,13 @@
 .profile-picture a {
   display: block;
   margin-top: -120px;
+  position: relative;
 }
 
-.profile-picture a img {
+.profile-picture a {
   border-radius: 3.5%;
   border: 2px solid black;
+  z-index: 10;
 }
 
 .profile-picture {
